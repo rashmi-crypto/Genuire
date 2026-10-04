@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security | Genuire</title>
+    <meta name="description" content="Genuire Security Policy — learn about our security architecture, responsible disclosure, and how we protect your data.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <div class="app-container page-container">
+        <!-- Header -->
+        <header class="app-header">
+            <a href="/" class="logo-area" style="text-decoration:none;color:inherit">
+                <img src="{{ url_for('static', filename='logo_shield.png') }}" class="logo-icon-img" alt="Genuire Logo">
+                <div class="logo-text">
+                    <h1>Genuire</h1>
+                    <span>Fake Job Posting Predictor</span>
+                </div>
+            </a>
+            <div class="header-actions">
+                <a href="/" class="btn btn-secondary btn-sm"><i class="fa-solid fa-arrow-left"></i> <span class="btn-text-mobile">Back to Scanner</span></a>
+                <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon moon-icon"></i>
+                    <i class="fa-solid fa-sun sun-icon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="page-main">
+            <div class="page-hero">
+                <div class="page-hero-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <h2>Security</h2>
+                <p>Security is built into every layer of Genuire. Learn about our architecture and how to report vulnerabilities.</p>
+            </div>
+
+            <!-- Security Architecture -->
+            <div class="page-card">
+                <div class="page-card-header">
+                    <i class="fa-solid fa-server"></i>
+                    <h3>Security Architecture</h3>
+                </div>
+                <div class="security-features-grid">
+                    <div class="security-feature">
+                        <div class="security-feature-icon"><i class="fa-solid fa-database"></i></div>
+                        <h4>Zero Data Storage</h4>
+                        <p>All analysis happens in-memory during the request lifecycle. No job posting data is ever written to disk or databases.</p>
+                    </div>
+                    <div class="security-feature">
+                        <div class="security-feature-icon"><i class="fa-solid fa-lock"></i></div>
+                        <h4>HTTPS Enforcement</h4>
+                        <p>In production, all traffic is encrypted via TLS/SSL. We enforce HTTPS to protect data in transit between your browser and our server.</p>
+                    </div>
+                    <div class="security-feature">
+                        <div class="security-feature-icon"><i class="fa-solid fa-user-slash"></i></div>
+                        <h4>No Authentication Required</h4>
+                        <p>Genuire doesn't require user accounts, eliminating risks of credential theft, password breaches, and session hijacking.</p>
+                    </div>
+                    <div class="security-feature">
+                        <div class="security-feature-icon"><i class="fa-solid fa-code-branch"></i></div>
+                        <h4>Open Source Auditing</h4>
+                        <p>Our entire codebase is publicly available for security audits. Transparency ensures accountability and community-driven security improvements.</p>
+                    </div>
+                    <div class="security-feature">
+                        <div class="security-feature-icon"><i class="fa-solid fa-filter"></i></div>
+                        <h4>Input Sanitization</h4>
+                        <p>All user inputs are sanitized and validated server-side before processing to prevent injection attacks (XSS, SQL injection, command injection).</p>
+                    </div>
+                    <div class="security-feature">
+                        <div class="security-feature-icon"><i class="fa-solid fa-robot"></i></div>
+                        <h4>Sandboxed URL Fetching</h4>
+                        <p>URL scanning uses controlled HTTP requests with timeouts, redirect limits, and user-agent spoofing to prevent SSRF and abuse.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Responsible Disclosure -->
+            <div class="page-card" style="margin-top: 2rem;">
+                <div class="page-card-header">
+                    <i class="fa-solid fa-bug"></i>
+                    <h3>Responsible Disclosure</h3>
+                </div>
+                <div class="policy-body">
+                    <p>If you discover a security vulnerability in Genuire, we ask that you disclose it responsibly:</p>
+                    <div class="disclosure-steps">
+                        <div class="disclosure-step">
+                            <div class="disclosure-step-num">1</div>
+                            <div>
+                                <h4>Report Privately</h4>
+                                <p>Send vulnerability details to <a href="mailto:dasouvik122005@gmail.com">dasouvik122005@gmail.com</a> with the subject line <strong>"Security Vulnerability Report"</strong>.</p>
+                            </div>
+                        </div>
+                        <div class="disclosure-step">
+                            <div class="disclosure-step-num">2</div>
+                            <div>
+                                <h4>Include Details</h4>
+                                <p>Provide a clear description of the vulnerability, steps to reproduce, potential impact, and any suggested fixes.</p>
+                            </div>
+                        </div>
+                        <div class="disclosure-step">
+                            <div class="disclosure-step-num">3</div>
+                            <div>
+                                <h4>Allow Response Time</h4>
+                                <p>Please allow up to <strong>72 hours</strong> for an initial response. We'll work with you to understand and resolve the issue.</p>
+                            </div>
+                        </div>
+                        <div class="disclosure-step">
+                            <div class="disclosure-step-num">4</div>
+                            <div>
+                                <h4>Coordinated Disclosure</h4>
+                                <p>Please do not publicly disclose the vulnerability until we've had a chance to issue a fix and notify affected users.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dependencies -->
+            <div class="page-card" style="margin-top: 2rem;">
+                <div class="page-card-header">
+                    <i class="fa-solid fa-cubes"></i>
+                    <h3>Dependencies & Supply Chain</h3>
+                </div>
+                <div class="policy-body">
+                    <p>Genuire uses the following key dependencies. We regularly update these to patch known vulnerabilities:</p>
+                    <div class="deps-table-wrap">
+                        <table class="deps-table">
+                            <thead>
+                                <tr>
+                                    <th>Package</th>
+                                    <th>Purpose</th>
+                                    <th>Security Note</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><code>Flask</code></td>
+                                    <td>Web framework</td>
+                                    <td>CSRF protection via request validation</td>
+                                </tr>
+                                <tr>
+                                    <td><code>scikit-learn</code></td>
+                                    <td>ML classifiers</td>
+                                    <td>Model files are pre-trained and read-only</td>
+                                </tr>
+                                <tr>
+                                    <td><code>BeautifulSoup4</code></td>
+                                    <td>HTML parsing</td>
+                                    <td>Used for URL scraping with sanitized output</td>
+                                </tr>
+                                <tr>
+                                    <td><code>NLTK</code></td>
+                                    <td>Natural Language Processing</td>
+                                    <td>Offline data bundled; no runtime downloads</td>
+                                </tr>
+                                <tr>
+                                    <td><code>requests</code></td>
+                                    <td>HTTP client for URL scanning</td>
+                                    <td>Timeout-limited, redirect-controlled</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-links">
+                <a href="/about"><i class="fa-solid fa-info-circle"></i> About</a>
+                <a href="/privacy"><i class="fa-solid fa-user-lock"></i> Privacy Policy</a>
+                <a href="/security"><i class="fa-solid fa-shield-halved"></i> Security</a>
+                <a href="/contact"><i class="fa-solid fa-envelope"></i> Contact</a>
+                <a href="https://github.com/dasouvik122005/Genuire" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
+            </div>
+            <div class="footer-disclaimer">
+                <i class="fa-solid fa-triangle-exclamation"></i> <strong>Disclaimer:</strong> Genuire is an AI-powered analytical tool. Risk scores and threat assessments are probabilistic evaluations based on historical training data and text analytics. Predictions do not constitute legal or professional advice.
+            </div>
+            <div class="footer-copy">&copy; 2025 Genuire. All rights reserved. Built with <i class="fa-solid fa-heart" style="color:var(--danger-color)"></i> by Souvik Das.</div>
+        </footer>
+    </div>
+</body>
+</html>

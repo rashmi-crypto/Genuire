@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Genuire | Job Fraud Detector</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <img src="{{ url_for('static', filename='logo_shield.png') }}" class="logo-icon-img" alt="Genuire Logo">
+                <div class="logo-text">
+                    <h1>Genuire</h1>
+                    <span>Fake Job Posting Predictor</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="header-tag">
+                    <span class="status-live-dot"></span> SECURE SHIELD ACTIVE
+                </div>
+                <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon moon-icon"></i>
+                    <i class="fa-solid fa-sun sun-icon"></i>
+                </button>
+            </div>
+        </header>
+
+        <main class="dashboard-grid">
+            <!-- Left Panel: Input Section -->
+            <section class="card form-card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-magnifying-glass-chart icon"></i> Assessment</h2>
+                    <div class="template-buttons">
+                        <button type="button" class="btn btn-secondary btn-sm" id="btn-load-real">
+                            <i class="fa-solid fa-circle-check text-success"></i> Load Real Job
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm" id="btn-load-fake">
+                            <i class="fa-solid fa-circle-exclamation text-danger"></i> Load Fake Job
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab Switchers -->
+                <div class="tabs-header">
+                    <button type="button" class="tab-btn active" data-tab="url-scan-tab">
+                        <i class="fa-solid fa-globe"></i> Smart URL Scan
+                    </button>
+                    <button type="button" class="tab-btn" data-tab="manual-form-tab">
+                        <i class="fa-solid fa-keyboard"></i> Manual Input
+                    </button>
+                </div>
+
+                <!-- Tab 1: URL Scanner -->
+                <div class="tab-content active" id="url-scan-tab">
+                    <div class="url-scanner-box">
+                        <div class="url-scanner-header">
+                            <i class="fa-solid fa-satellite-dish"></i>
+                            <span>Instant Job Link Scanner</span>
+                            <span class="url-scanner-tag">AI SCAN</span>
+                        </div>
+                        <div class="url-scanner-input-row">
+                            <div class="url-input-wrapper">
+                                <i class="fa-solid fa-link url-input-icon"></i>
+                                <input type="url" id="url-input" placeholder="Paste job posting URL (e.g. LinkedIn, Indeed...)" autocomplete="off">
+                            </div>
+                            <button type="button" class="btn btn-accent" id="btn-scan-url">
+                                <i class="fa-solid fa-satellite-dish"></i> Scan Link
+                            </button>
+                        </div>
+                        <div class="url-scanner-status" id="url-scanner-status" style="display: none;">
+                            <i class="fa-solid fa-spinner fa-spin"></i>
+                            <span id="url-status-text">Analyzing page content...</span>
+                        </div>
+                        
+                        <!-- Scrape Telemetry Summary -->
+                        <div class="url-details-box" id="url-scrape-details" style="display: none;">
+                            <div class="url-details-title"><i class="fa-solid fa-circle-nodes"></i> Scraped Job Parameters</div>
+                            <ul class="url-details-list">
+                                <li><span>Title:</span> <strong id="scrape-title-val">-</strong></li>
+                                <li><span>Company:</span> <strong id="scrape-company-val">-</strong></li>
+                                <li><span>Location:</span> <strong id="scrape-location-val">-</strong></li>
+                                <li><span>SSL Status:</span> <strong id="scrape-security-val">-</strong></li>
+                                <li><span>Work Model:</span> <strong id="scrape-remote-val">-</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab 2: Manual Input Form -->
+                <div class="tab-content" id="manual-form-tab">
+                    <form id="prediction-form" class="job-form">
+                        <div class="form-row split">
+                            <div class="form-group">
+                                <label for="title"><i class="fa-solid fa-signature"></i> Job Title</label>
+                                <input type="text" id="title" required placeholder="e.g., Senior Software Engineer">
+                            </div>
+                            <div class="form-group">
+                                <label for="location"><i class="fa-solid fa-location-dot"></i> Location</label>
+                                <input type="text" id="location" required placeholder="e.g., US, NY, New York">
+                                <small class="helper-text">Format: Country, State, City (e.g., US, CA, Bakersfield)</small>
+                            </div>
+                        </div>
+
+                        <div class="form-row split">
+                            <div class="form-group">
+                                <label for="required_experience"><i class="fa-solid fa-briefcase"></i> Required Experience</label>
+                                <select id="required_experience">
+                                    <option value="">Select Experience Level</option>
+                                    <option value="Internship">Internship</option>
+                                    <option value="Entry level">Entry level</option>
+                                    <option value="Associate">Associate</option>
+                                    <option value="Mid-Senior level">Mid-Senior level</option>
+                                    <option value="Director">Director</option>
+                                    <option value="Executive">Executive</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="required_education"><i class="fa-solid fa-graduation-cap"></i> Required Education</label>
+                                <select id="required_education">
+                                    <option value="">Select Education</option>
+                                    <option value="High School or equivalent">High School or equivalent</option>
+                                    <option value="Associate Degree">Associate Degree</option>
+                                    <option value="Bachelor's Degree">Bachelor's Degree</option>
+                                    <option value="Master's Degree">Master's Degree</option>
+                                    <option value="Doctorate">Doctorate</option>
+                                    <option value="Unspecified">Unspecified</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-row split">
+                            <div class="form-group">
+                                <label for="industry"><i class="fa-solid fa-industry"></i> Industry</label>
+                                <input type="text" id="industry" placeholder="e.g., Oil & Energy, Technology">
+                            </div>
+                            <div class="form-group">
+                                <label for="function"><i class="fa-solid fa-gears"></i> Function</label>
+                                <input type="text" id="function" placeholder="e.g., Engineering, Marketing">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="company_profile"><i class="fa-solid fa-building"></i> Company Profile</label>
+                            <textarea id="company_profile" rows="3" placeholder="Describe the company details..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description"><i class="fa-solid fa-file-lines"></i> Job Description</label>
+                            <textarea id="description" rows="5" required placeholder="Paste the full job details and description..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="requirements"><i class="fa-solid fa-list-check"></i> Job Requirements</label>
+                            <textarea id="requirements" rows="4" placeholder="Skills, qualifications, certificates..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="benefits"><i class="fa-solid fa-gift"></i> Compensation & Benefits</label>
+                            <textarea id="benefits" rows="2" placeholder="Insurance, signing bonus, retirement details..."></textarea>
+                        </div>
+
+                        <div class="form-row switches">
+                            <div class="switch-container">
+                                <label class="switch-label">
+                                    <i class="fa-solid fa-house-laptop"></i> Telecommuting / Remote Allowed?
+                                </label>
+                                <label class="switch">
+                                    <input type="checkbox" id="telecommuting">
+                                    <span class="slider"></span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-block" id="btn-submit">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Posting
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Right Panel: Results & Analytics Dashboard -->
+            <section class="card results-card">
+                <div class="card-header">
+                    <h2><i class="fa-solid fa-chart-pie icon"></i> Risk Analysis Dashboard</h2>
+                </div>
+
+                <div class="results-body">
+                    <!-- Idle State -->
+                    <div id="results-idle" class="result-state active">
+                        <div class="welcome-container">
+                            <div class="idle-illustration">
+                                <i class="fa-solid fa-shield-halved"></i>
+                            </div>
+                            <h3>Verify Job Legitimacy Instantly</h3>
+                            <p class="welcome-desc">Paste a job link or fill in the details — we'll tell you if it's a scam.</p>
+                            <p class="welcome-sub">Our AI-powered scanner audits formatting, NLP semantics, and recruiter signals to protect your application.</p>
+                        </div>
+                        
+                        <div class="how-it-works">
+                            <h4><i class="fa-solid fa-circle-nodes"></i> How it works</h4>
+                            <div class="how-columns">
+                                <div class="how-col">
+                                    <div class="how-icon"><i class="fa-solid fa-paste"></i></div>
+                                    <h5>1. Ingest Listing</h5>
+                                    <p>Paste a job link or manually input details to initiate scanning.</p>
+                                </div>
+                                <div class="how-col">
+                                    <div class="how-icon"><i class="fa-solid fa-magnifying-glass-chart"></i></div>
+                                    <h5>2. AI &amp; Data Audit</h5>
+                                    <p>We analyze semantic NLP patterns and crosscheck corporate registries.</p>
+                                </div>
+                                <div class="how-col">
+                                    <div class="how-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                                    <h5>3. Risk Report</h5>
+                                    <p>Get a comprehensive trust score with highlighted risk indicators.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div id="results-loading" class="result-state">
+                        <div class="spinner-box">
+                            <div class="circle-spinner"></div>
+                            <i class="fa-solid fa-shield-halved search-shield"></i>
+                        </div>
+                        <h3>Analyzing Posting Profile...</h3>
+                        <p>Running natural language classifiers, auditing metadata indicators, and calculating risk factor density ratios.</p>
+                    </div>
+
+                    <!-- Active Results State -->
+                    <div id="results-active" class="result-state">
+                        <!-- Horizontal Pipeline Tracker -->
+                        <div class="pipeline-tracker-box">
+                            <ul class="pipeline-track" id="pipeline-track">
+                                <li class="step active" id="step-1">
+                                    <span class="step-dot"><i class="fa-solid fa-file-arrow-up"></i></span>
+                                    <span class="step-label">Ingested</span>
+                                </li>
+                                <li class="step" id="step-2">
+                                    <span class="step-dot"><i class="fa-solid fa-brain"></i></span>
+                                    <span class="step-label">NLP Text</span>
+                                </li>
+                                <li class="step" id="step-3">
+                                    <span class="step-dot"><i class="fa-solid fa-link"></i></span>
+                                    <span class="step-label">URL Scan</span>
+                                </li>
+                                <li class="step" id="step-4">
+                                    <span class="step-dot"><i class="fa-solid fa-building-circle-check"></i></span>
+                                    <span class="step-label">Company Check</span>
+                                </li>
+                                <li class="step" id="step-5">
+                                    <span class="step-dot"><i class="fa-solid fa-user-shield"></i></span>
+                                    <span class="step-label">Recruiter Check</span>
+                                </li>
+                                <li class="step" id="step-6">
+                                    <span class="step-dot"><i class="fa-solid fa-calculator"></i></span>
+                                    <span class="step-label">Trust Score</span>
+                                </li>
+                                <li class="step" id="step-7">
+                                    <span class="step-dot"><i class="fa-solid fa-bell"></i></span>
+                                    <span class="step-label">Decision</span>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <!-- Upper Summary Grid -->
+                        <div class="results-summary">
+                            <!-- Circular Risk Gauge -->
+                            <div class="gauge-container">
+                                <svg class="gauge-svg" viewBox="0 0 120 120">
+                                    <circle class="gauge-bg" cx="60" cy="60" r="50"></circle>
+                                    <circle class="gauge-fill" id="gauge-fill-circle" cx="60" cy="60" r="50"></circle>
+                                </svg>
+                                <div class="gauge-text">
+                                    <span id="risk-percentage-val">0%</span>
+                                    <label>TRUST SCORE</label>
+                                </div>
+                            </div>
+
+                            <!-- Threat Level Info -->
+                            <div class="threat-status-box">
+                                <span class="badge" id="threat-badge">HIGH TRUST</span>
+                                <h3 id="threat-title">Safe Classification</h3>
+                                <p id="threat-desc">This posting complies with normal operational characteristics and features.</p>
+                            </div>
+                        </div>
+
+                        <!-- Trust Cards Grid -->
+                        <div class="trust-pillars-grid">
+                            <!-- Pillar 1: NLP Text Card -->
+                            <div class="trust-card" id="trust-card-nlp">
+                                <div class="trust-card-header">
+                                    <span class="trust-card-title"><i class="fa-solid fa-brain"></i> NLP Analysis</span>
+                                    <span class="trust-badge badge-passed" id="trust-badge-nlp"><i class="fa-solid fa-circle-check"></i> Passed</span>
+                                </div>
+                                <p class="trust-card-desc" id="trust-desc-nlp">Analyzes semantic features, structure, and text classification metrics.</p>
+                            </div>
+
+                            <!-- Pillar 2: URL Phishing Card -->
+                            <div class="trust-card" id="trust-card-url">
+                                <div class="trust-card-header">
+                                    <span class="trust-card-title"><i class="fa-solid fa-link"></i> URL Phishing</span>
+                                    <span class="trust-badge badge-passed" id="trust-badge-url"><i class="fa-solid fa-circle-check"></i> Passed</span>
+                                </div>
+                                <p class="trust-card-desc" id="trust-desc-url">Checks HTTPS security, domain safety databases, and link age parameters.</p>
+                            </div>
+
+                            <!-- Pillar 3: Company Verification Card -->
+                            <div class="trust-card" id="trust-card-company">
+                                <div class="trust-card-header">
+                                    <span class="trust-card-title"><i class="fa-solid fa-building-circle-check"></i> Company Check</span>
+                                    <span class="trust-badge badge-passed" id="trust-badge-company"><i class="fa-solid fa-circle-check"></i> Passed</span>
+                                </div>
+                                <p class="trust-card-desc" id="trust-desc-company">Cross-checks employer name against corporate registries (MCA, GST) and profiles.</p>
+                            </div>
+
+                            <!-- Pillar 4: Recruiter Behavior Card -->
+                            <div class="trust-card" id="trust-card-recruiter">
+                                <div class="trust-card-header">
+                                    <span class="trust-card-title"><i class="fa-solid fa-user-shield"></i> Recruiter Check</span>
+                                    <span class="trust-badge badge-passed" id="trust-badge-recruiter"><i class="fa-solid fa-circle-check"></i> Passed</span>
+                                </div>
+                                <p class="trust-card-desc" id="trust-desc-recruiter">Audits routing details, phone/email contact embedding, and location threat ratios.</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Highlighted Job Analysis Document View -->
+                        <div class="highlighted-analysis-container">
+                            <h3><i class="fa-solid fa-file-invoice"></i> Highlighted Job Profile</h3>
+                            <div class="highlighted-doc-box" id="highlighted-doc-box">
+                                <!-- The highlighted description text will be inserted here dynamically -->
+                            </div>
+                            <div class="highlight-legend">
+                                <span class="legend-item"><span class="legend-color hl-danger-badge"></span> High Risk (Payment/Apps)</span>
+                                <span class="legend-item"><span class="legend-color hl-warning-badge"></span> Warning (Urgency/Free Email)</span>
+                                <span class="legend-item"><span class="legend-color hl-info-badge"></span> Info (WFH/Location)</span>
+                            </div>
+                        </div>
+
+                        <!-- Risk Breakdown Checklist -->
+                        <div class="audit-checklist">
+                            <h3><i class="fa-solid fa-list-check"></i> Trust Factor Audit Logs</h3>
+                            <ul id="reasons-list">
+                                <!-- Dynamic reasons go here -->
+                            </ul>
+                        </div>
+
+                        <!-- Action/Recommendation Area -->
+                        <div class="recommendation-box" id="rec-box">
+                            <i class="fa-solid fa-circle-exclamation rec-icon" id="rec-icon"></i>
+                            <div class="rec-text">
+                                <h4 id="rec-title">Audit Cleared</h4>
+                                <p id="rec-desc">The job description appears reliable and matches standard hiring profile structures.</p>
+                            </div>
+                        </div>
+
+                        <!-- Technical/Developer Details Row (Fine Print for JS Compatibility) -->
+                        <div class="developer-details">
+                            <span class="dev-details-title"><i class="fa-solid fa-code"></i> Technical Indicators</span>
+                            <div class="dev-stats-row">
+                                <span>Text Model: <strong id="stat-text-model">CLEAN</strong></span>
+                                <span>Metadata: <strong id="stat-meta-model">CLEAN</strong></span>
+                                <span>Location Ratio: <strong id="stat-location-ratio">0.00:1</strong></span>
+                                <span>Char Count: <strong id="stat-char-count">0</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-links">
+                <a href="/about"><i class="fa-solid fa-info-circle"></i> About</a>
+                <a href="/privacy"><i class="fa-solid fa-user-lock"></i> Privacy Policy</a>
+                <a href="/security"><i class="fa-solid fa-shield-halved"></i> Security</a>
+                <a href="/contact"><i class="fa-solid fa-envelope"></i> Contact</a>
+                <a href="https://github.com/dasouvik122005/Genuire" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
+            </div>
+            <div class="footer-disclaimer">
+                <i class="fa-solid fa-triangle-exclamation"></i> <strong>Disclaimer:</strong> Genuire is an AI-powered analytical tool. Risk scores and threat assessments are probabilistic evaluations based on historical training data and text analytics. Predictions do not constitute legal or professional advice. Always verify recruiter identity through official channels before sharing personal details.
+            </div>
+            <div class="footer-copy">&copy; 2025 Genuire. All rights reserved. Built with <i class="fa-solid fa-heart" style="color:var(--danger-color)"></i> by Souvik Das.</div>
+        </footer>
+    </div>
+
+    <!-- Frontend logic -->
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>

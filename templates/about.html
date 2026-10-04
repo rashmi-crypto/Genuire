@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Genuire</title>
+    <meta name="description" content="Learn about Genuire — an AI-powered fake job posting detector built to protect job seekers from recruitment scams.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pages.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
+</head>
+<body>
+    <div class="glow-bg"></div>
+    <div class="app-container page-container">
+        <!-- Header -->
+        <header class="app-header">
+            <a href="/" class="logo-area" style="text-decoration:none;color:inherit">
+                <img src="{{ url_for('static', filename='logo_shield.png') }}" class="logo-icon-img" alt="Genuire Logo">
+                <div class="logo-text">
+                    <h1>Genuire</h1>
+                    <span>Fake Job Posting Predictor</span>
+                </div>
+            </a>
+            <div class="header-actions">
+                <a href="/" class="btn btn-secondary btn-sm"><i class="fa-solid fa-arrow-left"></i> <span class="btn-text-mobile">Back to Scanner</span></a>
+                <button type="button" id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Theme">
+                    <i class="fa-solid fa-moon moon-icon"></i>
+                    <i class="fa-solid fa-sun sun-icon"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Page Content -->
+        <main class="page-main">
+            <div class="page-hero">
+                <div class="page-hero-icon"><i class="fa-solid fa-info-circle"></i></div>
+                <h2>About Genuire</h2>
+                <p>An open-source, AI-powered toolkit designed to protect job seekers from fraudulent recruitment postings.</p>
+            </div>
+
+            <!-- Mission -->
+            <div class="page-card">
+                <div class="page-card-header">
+                    <i class="fa-solid fa-bullseye"></i>
+                    <h3>Our Mission</h3>
+                </div>
+                <div class="policy-body">
+                    <p>Job scams are a growing global problem. According to the FBI's Internet Crime Report, victims lost over <strong>$367 million</strong> to employment scams in 2023 alone. These scams prey on vulnerable job seekers — from fresh graduates to experienced professionals.</p>
+                    <p>Genuire was built to <strong>democratize fraud detection</strong>. By combining Natural Language Processing, machine learning classifiers, and heuristic analysis, we give every job seeker the ability to verify a posting before applying — instantly and for free.</p>
+                </div>
+            </div>
+
+            <!-- How It Works -->
+            <div class="page-card" style="margin-top: 2rem;">
+                <div class="page-card-header">
+                    <i class="fa-solid fa-microchip"></i>
+                    <h3>How It Works</h3>
+                </div>
+                <div class="about-pipeline">
+                    <div class="pipeline-step-card">
+                        <div class="pipeline-step-icon"><i class="fa-solid fa-file-import"></i></div>
+                        <h4>1. Data Ingestion</h4>
+                        <p>You submit a job posting via URL scan (we auto-extract details) or manual input form. The raw text is assembled from all fields.</p>
+                    </div>
+                    <div class="pipeline-step-card">
+                        <div class="pipeline-step-icon"><i class="fa-solid fa-brain"></i></div>
+                        <h4>2. NLP Text Classification</h4>
+                        <p>The posting text is preprocessed (tokenization, stemming, lemmatization) and run through a TF-IDF vectorizer + Logistic Regression classifier trained on 18,000+ real job postings.</p>
+                    </div>
+                    <div class="pipeline-step-card">
+                        <div class="pipeline-step-icon"><i class="fa-solid fa-chart-bar"></i></div>
+                        <h4>3. Feature Engineering</h4>
+                        <p>We compute 14+ engineered features: word count, readability scores, URL density, email domains, punctuation patterns, and location-based risk ratios.</p>
+                    </div>
+                    <div class="pipeline-step-card">
+                        <div class="pipeline-step-icon"><i class="fa-solid fa-tree"></i></div>
+                        <h4>4. Random Forest Classifier</h4>
+                        <p>The numeric/engineered features are fed into a Random Forest classifier that captures non-linear patterns like "high exclamation count + low word count + free email" combinations.</p>
+                    </div>
+                    <div class="pipeline-step-card">
+                        <div class="pipeline-step-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                        <h4>5. Ensemble Decision</h4>
+                        <p>Both model predictions are combined (60% ML weight, 40% heuristic rules) into a final trust score. Heuristic rules check for SSL, domain age, urgency language, and recruiter signals.</p>
+                    </div>
+                    <div class="pipeline-step-card">
+                        <div class="pipeline-step-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                        <h4>6. Risk Report</h4>
+                        <p>A comprehensive dashboard displays the trust score, pillar-by-pillar audit results, highlighted risk factors, and actionable recommendations.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tech Stack -->
+            <div class="page-card" style="margin-top: 2rem;">
+                <div class="page-card-header">
+                    <i class="fa-solid fa-layer-group"></i>
+                    <h3>Technology Stack</h3>
+                </div>
+                <div class="tech-stack-grid">
+                    <div class="tech-item">
+                        <i class="fa-brands fa-python"></i>
+                        <span>Python 3.12</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-solid fa-flask"></i>
+                        <span>Flask</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-solid fa-brain"></i>
+                        <span>scikit-learn</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-solid fa-language"></i>
+                        <span>NLTK</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-solid fa-code"></i>
+                        <span>BeautifulSoup4</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-brands fa-js"></i>
+                        <span>Vanilla JS</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-brands fa-css3-alt"></i>
+                        <span>CSS3</span>
+                    </div>
+                    <div class="tech-item">
+                        <i class="fa-solid fa-chart-line"></i>
+                        <span>textstat</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dataset -->
+            <div class="page-card" style="margin-top: 2rem;">
+                <div class="page-card-header">
+                    <i class="fa-solid fa-database"></i>
+                    <h3>Training Dataset</h3>
+                </div>
+                <div class="policy-body">
+                    <p>Genuire was trained on the <strong>Employment Scam Aegean Dataset (EMSCAD)</strong> — a benchmark dataset containing 17,880 real-world job postings (866 fraudulent, 17,014 legitimate) collected from multiple job aggregation platforms.</p>
+                    <p>The dataset includes structured fields such as job title, location, company profile, description, requirements, benefits, education level, experience level, telecommuting status, and more.</p>
+                    <p>The dataset is publicly available on <a href="https://www.kaggle.com/shivamb/real-or-fake-fake-jobposting-prediction" target="_blank" rel="noopener noreferrer">Kaggle</a>.</p>
+                </div>
+            </div>
+
+            <!-- Credits -->
+            <div class="page-card" style="margin-top: 2rem;">
+                <div class="page-card-header">
+                    <i class="fa-solid fa-users"></i>
+                    <h3>Credits & Team</h3>
+                </div>
+                <div class="policy-body">
+                    <p>Genuire is developed and maintained by <strong>Souvik Das</strong>.</p>
+                    <ul>
+                        <li><strong>Email:</strong> <a href="mailto:dasouvik122005@gmail.com">dasouvik122005@gmail.com</a></li>
+                        <li><strong>GitHub:</strong> <a href="https://github.com/dasouvik122005" target="_blank" rel="noopener noreferrer">@dasouvik122005</a></li>
+                    </ul>
+                    <p>Special thanks to the open-source community and researchers who made this project possible through their foundational work in NLP and fraud detection.</p>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-links">
+                <a href="/about"><i class="fa-solid fa-info-circle"></i> About</a>
+                <a href="/privacy"><i class="fa-solid fa-user-lock"></i> Privacy Policy</a>
+                <a href="/security"><i class="fa-solid fa-shield-halved"></i> Security</a>
+                <a href="/contact"><i class="fa-solid fa-envelope"></i> Contact</a>
+                <a href="https://github.com/dasouvik122005/Genuire" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
+            </div>
+            <div class="footer-disclaimer">
+                <i class="fa-solid fa-triangle-exclamation"></i> <strong>Disclaimer:</strong> Genuire is an AI-powered analytical tool. Risk scores and threat assessments are probabilistic evaluations based on historical training data and text analytics. Predictions do not constitute legal or professional advice.
+            </div>
+            <div class="footer-copy">&copy; 2025 Genuire. All rights reserved. Built with <i class="fa-solid fa-heart" style="color:var(--danger-color)"></i> by Souvik Das.</div>
+        </footer>
+    </div>
+</body>
+</html>
