@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="static/logo_full.png" alt="Genuire Logo" width="380">
+  <img src="static/logo.jpeg" alt="Genuire Logo" width="150">
 </p>
 
 <p align="center">
@@ -29,9 +29,10 @@
 ## ✨ Key Features
 
 - **Real-Time Threat Detection**: Instantaneous analysis of job postings to identify potential scams.
+- **Multimodal Gemma Analysis**: Uses Google's `gemma-4-31b-it` vision models to scan uploaded screenshots of job postings for visual and textual fraud indicators.
 - **Smart URL Scraping**: Automatically fetches and populates job details (title, company, description) from major job boards for seamless analysis.
 - **5-Pillar Trust Engine**: Employs a multi-faceted verification pipeline incorporating machine learning and heuristic risk metrics.
-- **Premium Visual Dashboard**: A sleek, responsive user interface featuring a dynamic horizontal pipeline tracker, theme toggling (Obsidian Dark / Alabaster Light), and detailed trust telemetry.
+- **Premium Visual Dashboard**: A sleek, responsive user interface featuring a dynamic horizontal pipeline tracker, automatic Light Mode, and detailed trust telemetry.
 
 ---
 
@@ -99,9 +100,17 @@ Ensure you have Python 3.12+ installed. Install the required dependencies:
 ```bash
 pip install -r requirements.txt
 ```
-*(Or install manually: `pip install flask pandas numpy scikit-learn imbalanced-learn joblib textstat beautifulsoup4 nltk python-docx`)*
+*(Or install manually: `pip install flask pandas numpy scikit-learn==1.7.2 imbalanced-learn joblib textstat beautifulsoup4 nltk google-generativeai python-dotenv`)*
 
-### 2. Train the Models
+### 2. Environment Setup
+
+Create a `.env` file in the root directory and add your Google Gemini API key to enable the Multimodal Image Scan feature:
+
+```env
+GEMINI_API_KEY=your_api_key_here
+```
+
+### 3. Train the Models
 
 Train and serialize the TF-IDF vectorizers and Random Forest classifiers on the provided balanced dataset. 
 
@@ -110,7 +119,7 @@ python train_model.py
 ```
 *This step outputs accuracy metrics and saves the binary model files (`tfidf_vectorizer.pkl`, `clf_log.pkl`, `clf_num.pkl`, `numeric_features.pkl`) into the `models/` directory.*
 
-### 3. Launch the Application
+### 4. Launch the Application
 
 Start the Flask development server:
 
