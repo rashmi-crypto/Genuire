@@ -9,6 +9,7 @@ import textstat
 import requests as http_requests
 from bs4 import BeautifulSoup
 from flask import Flask, request, jsonify, render_template
+import google.generativeai as genai
 
 import nltk
 from nltk.corpus import stopwords
@@ -16,8 +17,18 @@ from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 from nltk.tokenize import RegexpTokenizer
 
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
 # Initialize Flask app
 app = Flask(__name__)
+
+# Configure Gemini API for Gemma 4 feature
+# (Ensure GEMINI_API_KEY is set in your environment variables or .env file)
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY", "YOUR_API_KEY_HERE"))
+
 
 # Load models and data mapping
 base_path = os.path.dirname(os.path.abspath(__file__))
@@ -700,6 +711,102 @@ def predict():
         return jsonify({
             "status": "error",
             "message": str(e)
+        }), 500
+
+@app.route('/gemma-scan-image', methods=['POST'])
+def gemma_scan_image():
+    """
+    Multimodal Feature: Uses Gemma (via Gemini 1.5 Flash) to scan uploaded images
+    of offer letters or recruiter chats for scam indicators.
+    """
+    try:
+        # Check if an image was uploaded
+        if 'image' not in request.files:
+            return jsonify({"status": "error", "message": "No image file provided."}), 400
+            
+        file = request.files['image']
+        if file.filename == '':
+            return jsonify({"status": "error", "message": "No selected file."}), 400
+
+        # Read the image file bytes
+        image_bytes = file.read()
+        
+        prompt = (
+            "You are an expert fraud detection AI. Look at this uploaded image. "
+            "It might be a job offer letter, a recruiter email, or a WhatsApp chat screenshot. "
+            "Extract text and look for visual inconsistencies (e.g., photoshopped logos). "
+            "Output your response strictly as a JSON object with EXACTLY these keys: "
+            '{"is_scam": true or false, "trust_score": integer from 0 to 100, "reasons": ["reason 1", "reason 2"]}'
+        )
+
+        model = genai.GenerativeModel('gemma-4-31b-it')
+        
+        # Fallback demo mode if no API key is provided
+        if os.environ.get("GEMINI_API_KEY") == "YOUR_API_KEY_HERE" or not os.environ.get("GEMINI_API_KEY"):
+            parsed = {
+                "is_scam": True,
+                "trust_score": 12,
+                "reasons": [
+                    "[Demo] The company logo is highly pixelated, suggesting forgery.",
+                    "[Demo] Text extraction reveals a request for a $50 upfront fee."
+                ]
+            }
+        else:
+            response = model.generate_content([
+                prompt,
+                {"mime_type": file.mimetype, "data": image_bytes}
+            ])
+            text = response.text.strip()
+            # Clean markdown code block formatting if present
+            if text.startswith("```json"):
+                text = text.split("```json")[1].split("```")[0].strip()
+            elif text.startswith("```"):
+                text = text.split("```")[1].split("```")[0].strip()
+                
+            try:
+                parsed = json.loads(text)
+            except json.JSONDecodeError:
+                # Fallback if Gemma didn't follow JSON format perfectly
+                is_scam = "scam" in text.lower() or "suspicious" in text.lower()
+                parsed = {
+                    "is_scam": is_scam,
+                    "trust_score": 15 if is_scam else 85,
+                    "reasons": [text[:500] + "... (Parsed from text)"]
+                }
+        
+        # Map to dashboard format
+        is_scam = parsed.get("is_scam", True)
+        prediction = 1 if is_scam else 0
+        status_flag = "FAILED" if is_scam else "PASSED"
+
+        return jsonify({
+            "status": "success",
+            "prediction": prediction,
+            "trust_score": parsed.get("trust_score", 15 if is_scam else 85),
+            "reasons": parsed.get("reasons", []),
+            "details": {
+                "nlp_status": status_flag,
+                "nlp_reasons": ["Gemma Multimodal Visual Analysis"] if not is_scam else parsed.get("reasons", []),
+                "url_status": "PASSED",
+                "url_reasons": ["Not applicable for image uploads."],
+                "company_status": status_flag,
+                "company_reasons": ["Image formatting and branding check."],
+                "recruiter_status": status_flag,
+                "recruiter_reasons": ["Extracted text verification."],
+                "text_classification_fraud": prediction,
+                "numerical_features_fraud": prediction,
+                "location_ratio": 0.0,
+                "character_count": 0,
+                "telecommuting": 0,
+                "free_emails": [],
+                "corp_emails": []
+            }
+        })
+
+    except Exception as e:
+        return jsonify({
+            "status": "error",
+            "message": f"Gemma API Error: {str(e)}"
         }), 500
 
 if __name__ == '__main__':

@@ -152,6 +152,105 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================================
+    // Common Dashboard Renderer
+    // ============================================================
+    window.renderDashboard = function(result, descriptionText, locationVal) {
+        setTrustGauge(result.trust_score);
+        finalizePipelineStates(result.details, result.prediction);
+
+        const badge = document.getElementById('threat-badge');
+        const threatTitle = document.getElementById('threat-title');
+        const threatDesc = document.getElementById('threat-desc');
+        const recBox = document.getElementById('rec-box');
+        const recIcon = document.getElementById('rec-icon');
+        const recTitle = document.getElementById('rec-title');
+        const recDesc = document.getElementById('rec-desc');
+
+        badge.className = 'badge';
+        recBox.className = 'recommendation-box';
+
+        if (result.prediction === 1) {
+            badge.innerText = 'LOW TRUST';
+            badge.classList.add('badge-danger');
+            threatTitle.innerText = 'Scam Vulnerability Alert';
+            threatDesc.innerText = 'Critical threat signals detected across NLP, company registration, and recruiter routing checks.';
+            recBox.classList.add('rec-danger');
+            recIcon.className = 'fa-solid fa-bell-slash rec-icon';
+            recTitle.innerText = 'Application Blocked';
+            recDesc.innerText = 'This job description exhibits confirmed phishing patterns. Do NOT submit personal credentials or payment details.';
+        } else if (result.trust_score < 80) {
+            badge.innerText = 'NEUTRAL RISK';
+            badge.classList.add('badge-warning');
+            threatTitle.innerText = 'Minor Warning Signs';
+            threatDesc.innerText = 'Some parameters flagged minor warnings, but did not trigger low-trust blocking thresholds.';
+            recBox.classList.add('rec-warning');
+            recIcon.className = 'fa-solid fa-circle-exclamation rec-icon';
+            recTitle.innerText = 'Cross-Verification Advised';
+            recDesc.innerText = 'Conduct secondary verification on the official company portal before submitting an application.';
+        } else {
+            badge.innerText = 'HIGH TRUST';
+            badge.classList.add('badge-success');
+            threatTitle.innerText = 'Passed Verification';
+            threatDesc.innerText = 'This posting satisfies all validation checks and matches legitimate hiring profile parameters.';
+            recBox.classList.add('rec-success');
+            recIcon.className = 'fa-solid fa-circle-check rec-icon';
+            recTitle.innerText = 'Safe to Apply';
+            recDesc.innerText = 'No threat signatures detected. Job description meets standard operational trust guidelines.';
+        }
+
+        updateTrustCard(
+            'trust-card-nlp', 'trust-badge-nlp', 'trust-desc-nlp',
+            result.details.nlp_status, result.details.nlp_reasons,
+            "Language structures and vocabulary match secure patterns."
+        );
+        updateTrustCard(
+            'trust-card-url', 'trust-badge-url', 'trust-desc-url',
+            result.details.url_status, result.details.url_reasons,
+            "SSL secure domain connection verified with no blacklist hits."
+        );
+        updateTrustCard(
+            'trust-card-company', 'trust-badge-company', 'trust-desc-company',
+            result.details.company_status, result.details.company_reasons,
+            "Corporate details validated against registries and active profiles."
+        );
+        updateTrustCard(
+            'trust-card-recruiter', 'trust-badge-recruiter', 'trust-desc-recruiter',
+            result.details.recruiter_status, result.details.recruiter_reasons,
+            "Recruitment routing paths and listing templates are within compliance."
+        );
+
+        document.getElementById('stat-text-model').innerText = result.details.text_classification_fraud ? 'SUSPICIOUS' : 'CLEAN';
+        document.getElementById('stat-text-model').className = result.details.text_classification_fraud ? 'text-danger' : 'text-success';
+        document.getElementById('stat-meta-model').innerText = result.details.numerical_features_fraud ? 'SUSPICIOUS' : 'CLEAN';
+        document.getElementById('stat-meta-model').className = result.details.numerical_features_fraud ? 'text-danger' : 'text-success';
+        document.getElementById('stat-location-ratio').innerText = `${result.details.location_ratio.toFixed(2)}:1`;
+        document.getElementById('stat-location-ratio').className = result.details.location_ratio >= 1.0 ? 'text-danger' : (result.details.location_ratio > 0 ? 'text-warning' : 'text-success');
+        document.getElementById('stat-char-count').innerText = result.details.character_count;
+
+        const reasonsList = document.getElementById('reasons-list');
+        reasonsList.innerHTML = '';
+        if (result.reasons.length === 0) {
+            reasonsList.innerHTML = '<li><i class="fa-solid fa-shield-check text-success"></i> All trust engine parameters successfully cleared validation checks.</li>';
+        } else {
+            result.reasons.forEach(reason => {
+                const li = document.createElement('li');
+                li.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-warning"></i> ${reason}`;
+                reasonsList.appendChild(li);
+            });
+        }
+
+        const highlightHtml = highlightText(
+            descriptionText, 
+            result.details.free_emails, 
+            result.details.corp_emails, 
+            result.details.location_ratio, 
+            locationVal, 
+            result.details.telecommuting
+        );
+        document.getElementById('highlighted-doc-box').innerHTML = highlightHtml;
+    }
+
+    // ============================================================
     // Form Submission & Prediction
     // ============================================================
     form.addEventListener('submit', async (e) => {
@@ -188,115 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (result.status === 'success') {
-                // Update Trust Score Gauge
-                setTrustGauge(result.trust_score);
-
-                // Finalize horizontal pipeline markers
-                finalizePipelineStates(result.details, result.prediction);
-
-                // Threat classifications
-                const badge = document.getElementById('threat-badge');
-                const threatTitle = document.getElementById('threat-title');
-                const threatDesc = document.getElementById('threat-desc');
-                const recBox = document.getElementById('rec-box');
-                const recIcon = document.getElementById('rec-icon');
-                const recTitle = document.getElementById('rec-title');
-                const recDesc = document.getElementById('rec-desc');
-
-                badge.className = 'badge';
-                recBox.className = 'recommendation-box';
-
-                if (result.prediction === 1) {
-                    badge.innerText = 'LOW TRUST';
-                    badge.classList.add('badge-danger');
-                    threatTitle.innerText = 'Scam Vulnerability Alert';
-                    threatDesc.innerText = 'Critical threat signals detected across NLP, company registration, and recruiter routing checks.';
-
-                    recBox.classList.add('rec-danger');
-                    recIcon.className = 'fa-solid fa-bell-slash rec-icon';
-                    recTitle.innerText = 'Application Blocked';
-                    recDesc.innerText = 'This job description exhibits confirmed phishing patterns. Do NOT submit personal credentials or payment details.';
-                } else if (result.trust_score < 80) {
-                    badge.innerText = 'NEUTRAL RISK';
-                    badge.classList.add('badge-warning');
-                    threatTitle.innerText = 'Minor Warning Signs';
-                    threatDesc.innerText = 'Some parameters flagged minor warnings, but did not trigger low-trust blocking thresholds.';
-
-                    recBox.classList.add('rec-warning');
-                    recIcon.className = 'fa-solid fa-circle-exclamation rec-icon';
-                    recTitle.innerText = 'Cross-Verification Advised';
-                    recDesc.innerText = 'Conduct secondary verification on the official company portal before submitting an application.';
-                } else {
-                    badge.innerText = 'HIGH TRUST';
-                    badge.classList.add('badge-success');
-                    threatTitle.innerText = 'Passed Verification';
-                    threatDesc.innerText = 'This posting satisfies all validation checks and matches legitimate hiring profile parameters.';
-
-                    recBox.classList.add('rec-success');
-                    recIcon.className = 'fa-solid fa-circle-check rec-icon';
-                    recTitle.innerText = 'Safe to Apply';
-                    recDesc.innerText = 'No threat signatures detected. Job description meets standard operational trust guidelines.';
-                }
-
-                // Render Trust Cards contents
-                updateTrustCard(
-                    'trust-card-nlp', 'trust-badge-nlp', 'trust-desc-nlp',
-                    result.details.nlp_status, result.details.nlp_reasons,
-                    "Language structures and vocabulary match secure patterns."
-                );
-                updateTrustCard(
-                    'trust-card-url', 'trust-badge-url', 'trust-desc-url',
-                    result.details.url_status, result.details.url_reasons,
-                    "SSL secure domain connection verified with no blacklist hits."
-                );
-                updateTrustCard(
-                    'trust-card-company', 'trust-badge-company', 'trust-desc-company',
-                    result.details.company_status, result.details.company_reasons,
-                    "Corporate details validated against registries and active profiles."
-                );
-                updateTrustCard(
-                    'trust-card-recruiter', 'trust-badge-recruiter', 'trust-desc-recruiter',
-                    result.details.recruiter_status, result.details.recruiter_reasons,
-                    "Recruitment routing paths and listing templates are within compliance."
-                );
-
-                // Technical stats details (Fine Print Drawer)
-                document.getElementById('stat-text-model').innerText = result.details.text_classification_fraud ? 'SUSPICIOUS' : 'CLEAN';
-                document.getElementById('stat-text-model').className = result.details.text_classification_fraud ? 'text-danger' : 'text-success';
-
-                document.getElementById('stat-meta-model').innerText = result.details.numerical_features_fraud ? 'SUSPICIOUS' : 'CLEAN';
-                document.getElementById('stat-meta-model').className = result.details.numerical_features_fraud ? 'text-danger' : 'text-success';
-
-                document.getElementById('stat-location-ratio').innerText = `${result.details.location_ratio.toFixed(2)}:1`;
-                document.getElementById('stat-location-ratio').className = result.details.location_ratio >= 1.0 ? 'text-danger' : (result.details.location_ratio > 0 ? 'text-warning' : 'text-success');
-
-                document.getElementById('stat-char-count').innerText = result.details.character_count;
-
-                // Reasons lists logs
-                const reasonsList = document.getElementById('reasons-list');
-                reasonsList.innerHTML = '';
-                if (result.reasons.length === 0) {
-                    reasonsList.innerHTML = '<li><i class="fa-solid fa-shield-check text-success"></i> All trust engine parameters successfully cleared validation checks.</li>';
-                } else {
-                    result.reasons.forEach(reason => {
-                        const li = document.createElement('li');
-                        li.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-warning"></i> ${reason}`;
-                        reasonsList.appendChild(li);
-                    });
-                }
-
-                // Render Highlighted Job description text
-                const descriptionText = document.getElementById('description').value;
-                const highlightHtml = highlightText(
-                    descriptionText, 
-                    result.details.free_emails, 
-                    result.details.corp_emails, 
-                    result.details.location_ratio, 
-                    payload.location, 
-                    result.details.telecommuting
-                );
-                document.getElementById('highlighted-doc-box').innerHTML = highlightHtml;
-
+                renderDashboard(result, descriptionText, payload.location);
                 // Switch states
                 loadingState.classList.remove('active');
                 activeState.classList.add('active');
@@ -605,3 +596,129 @@ function highlightText(text, freeEmails, corpEmails, locationRatio, locationName
 
     return escapedText;
 }
+
+// ============================================================
+// Gemma Image Scanner Logic
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    const fileInput = document.getElementById('image-upload');
+    const fileNameDisplay = document.getElementById('file-name-display');
+    const imageForm = document.getElementById('image-scan-form');
+    const imageStatus = document.getElementById('image-scanner-status');
+    const imageStatusText = document.getElementById('image-status-text');
+    const imageLoadingIcon = document.getElementById('image-loading-icon');
+    const imageResultBox = document.getElementById('image-analysis-result');
+    const btnScanImage = document.getElementById('btn-scan-image');
+
+    if (!fileInput || !imageForm) return;
+
+    fileInput.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+            fileNameDisplay.textContent = "Selected: " + e.target.files[0].name;
+            fileNameDisplay.style.color = "#10a37f";
+            fileNameDisplay.style.fontWeight = "bold";
+        } else {
+            fileNameDisplay.textContent = "Click to browse or drag and drop an image";
+            fileNameDisplay.style.color = "";
+            fileNameDisplay.style.fontWeight = "";
+        }
+    });
+
+    imageForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (fileInput.files.length === 0) {
+            alert('Please select an image first.');
+            return;
+        }
+
+        // Show loading state on both the button and the main right-side dashboard
+        btnScanImage.disabled = true;
+        btnScanImage.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Analyzing...';
+        imageStatus.style.display = 'flex';
+        imageStatus.style.borderLeftColor = '#10a37f';
+        imageLoadingIcon.style.display = 'inline-block';
+        imageLoadingIcon.className = 'fa-solid fa-spinner fa-spin';
+        imageStatusText.textContent = 'Gemma is analyzing the image. This may take a few seconds...';
+        imageResultBox.textContent = '';
+        
+        const idleState = document.getElementById('results-idle');
+        const activeState = document.getElementById('results-active');
+        const loadingState = document.getElementById('results-loading');
+        
+        idleState.classList.remove('active');
+        activeState.classList.remove('active');
+        loadingState.classList.add('active');
+        
+        // Start pipeline animation
+        const steps = document.querySelectorAll('.pipeline-track .step');
+        steps.forEach((step, idx) => {
+            step.className = 'step';
+            if (idx === 0) step.classList.add('active'); // Ingested active
+        });
+
+        let currentStep = 0;
+        let pipelineInterval = setInterval(() => {
+            if (currentStep < 5) { // Stop at step 6 (Trust Score) during loading
+                steps[currentStep].classList.remove('active');
+                steps[currentStep].classList.add('completed');
+                currentStep++;
+                steps[currentStep].classList.add('active');
+            } else {
+                clearInterval(pipelineInterval);
+            }
+        }, 250);
+
+        const formData = new FormData();
+        formData.append('image', fileInput.files[0]);
+
+        try {
+            const response = await fetch('/gemma-scan-image', {
+                method: 'POST',
+                body: formData
+            });
+            const result = await response.json();
+
+            imageLoadingIcon.style.display = 'none';
+
+            if (result.status === 'success') {
+                imageStatus.style.borderLeftColor = 'var(--success-color)';
+                imageStatusText.textContent = 'Scan Complete! See dashboard for details.';
+                imageStatusText.style.color = 'var(--success-color)';
+                imageResultBox.textContent = "Gemma successfully analyzed the image and updated the Risk Analysis Dashboard.";
+                
+                // Clear animation
+                clearInterval(pipelineInterval);
+                
+                // Render the right dashboard
+                renderDashboard(result, "Image scan results provided via Gemma Multimodal Analysis.", "");
+                
+                loadingState.classList.remove('active');
+                activeState.classList.add('active');
+            } else {
+                imageStatus.style.borderLeftColor = 'var(--danger-color)';
+                imageStatusText.textContent = 'Error:';
+                imageStatusText.style.color = 'var(--danger-color)';
+                imageResultBox.textContent = result.message || 'Failed to scan image.';
+                
+                clearInterval(pipelineInterval);
+                loadingState.classList.remove('active');
+                idleState.classList.add('active');
+            }
+        } catch (err) {
+            console.error(err);
+            imageLoadingIcon.style.display = 'none';
+            imageStatus.style.borderLeftColor = 'var(--danger-color)';
+            imageStatusText.textContent = 'Connection Error:';
+            imageStatusText.style.color = 'var(--danger-color)';
+            imageResultBox.textContent = 'Could not reach the server. Make sure the backend is running.';
+            
+            clearInterval(pipelineInterval);
+            loadingState.classList.remove('active');
+            idleState.classList.add('active');
+        } finally {
+            btnScanImage.disabled = false;
+            btnScanImage.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> Scan Image with Gemma';
+        }
+    });
+});

@@ -15,7 +15,7 @@
         <!-- Header -->
         <header class="app-header">
             <div class="logo-area">
-                <img src="{{ url_for('static', filename='logo_shield.png') }}" class="logo-icon-img" alt="Genuire Logo">
+                <img src="{{ url_for('static', filename='logo.jpeg') }}" class="logo-icon-img" alt="Genuire Logo" style="height: 50px; border-radius: 8px; margin-right: 10px;">
                 <div class="logo-text">
                     <h1>Genuire</h1>
                     <span>Fake Job Posting Predictor</span>
@@ -54,6 +54,9 @@
                     </button>
                     <button type="button" class="tab-btn" data-tab="manual-form-tab">
                         <i class="fa-solid fa-keyboard"></i> Manual Input
+                    </button>
+                    <button type="button" class="tab-btn" data-tab="image-scan-tab" style="background: linear-gradient(135deg, #10a37f, #0d7c5f); color: white; border: none;">
+                        <i class="fa-solid fa-camera"></i> Gemma Scan
                     </button>
                 </div>
 
@@ -182,6 +185,37 @@
                             <i class="fa-solid fa-wand-magic-sparkles"></i> Analyze Posting
                         </button>
                     </form>
+                </div>
+
+                <!-- Tab 3: Image Scanner -->
+                <div class="tab-content" id="image-scan-tab">
+                    <div class="url-scanner-box">
+                        <div class="url-scanner-header">
+                            <i class="fa-solid fa-camera"></i>
+                            <span>Multimodal Image Scanner</span>
+                            <span class="url-scanner-tag" style="background: #10a37f;">GEMMA 4</span>
+                        </div>
+                        <p style="margin-top: 10px; font-size: 0.9em; color: var(--text-muted);">Upload a screenshot of a suspicious WhatsApp message, email, or offer letter (JPG/PNG). Gemma will analyze text and visual flags.</p>
+                        <form id="image-scan-form" class="job-form" enctype="multipart/form-data" style="margin-top: 20px;">
+                            <div class="form-group">
+                                <label for="image-upload" id="image-drop-area" style="border: 2px dashed var(--border-color); padding: 40px 20px; text-align: center; cursor: pointer; border-radius: 8px; display: block; transition: border-color 0.3s; background: var(--bg-secondary);">
+                                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2em; margin-bottom: 10px; color: #10a37f;"></i><br>
+                                    <span id="file-name-display">Click to browse or drag and drop an image</span>
+                                </label>
+                                <input type="file" id="image-upload" name="image" accept="image/png, image/jpeg, image/jpg" style="display: none;" required>
+                            </div>
+                            <button type="submit" class="btn btn-block" id="btn-scan-image" style="background: linear-gradient(135deg, #10a37f, #0d7c5f); color: white; margin-top: 15px;">
+                                <i class="fa-solid fa-wand-magic-sparkles"></i> Scan Image with Gemma
+                            </button>
+                        </form>
+                        <div class="url-scanner-status" id="image-scanner-status" style="display: none; margin-top: 20px; flex-direction: column; align-items: flex-start; text-align: left; padding: 15px; background: var(--bg-secondary); border-radius: 8px; border-left: 4px solid #10a37f;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; font-weight: bold; width: 100%;">
+                                <i class="fa-solid fa-spinner fa-spin" id="image-loading-icon"></i>
+                                <span id="image-status-text" style="flex: 1;">Gemma is analyzing the image...</span>
+                            </div>
+                            <div id="image-analysis-result" style="font-size: 0.9em; line-height: 1.5; white-space: pre-wrap; width: 100%;"></div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -381,15 +415,11 @@
         <footer class="app-footer">
             <div class="footer-links">
                 <a href="/about"><i class="fa-solid fa-info-circle"></i> About</a>
-                <a href="/privacy"><i class="fa-solid fa-user-lock"></i> Privacy Policy</a>
-                <a href="/security"><i class="fa-solid fa-shield-halved"></i> Security</a>
-                <a href="/contact"><i class="fa-solid fa-envelope"></i> Contact</a>
                 <a href="https://github.com/dasouvik122005/Genuire" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-github"></i> GitHub</a>
             </div>
             <div class="footer-disclaimer">
                 <i class="fa-solid fa-triangle-exclamation"></i> <strong>Disclaimer:</strong> Genuire is an AI-powered analytical tool. Risk scores and threat assessments are probabilistic evaluations based on historical training data and text analytics. Predictions do not constitute legal or professional advice. Always verify recruiter identity through official channels before sharing personal details.
             </div>
-            <div class="footer-copy">&copy; 2025 Genuire. All rights reserved. Built with <i class="fa-solid fa-heart" style="color:var(--danger-color)"></i> by Souvik Das.</div>
         </footer>
     </div>
 

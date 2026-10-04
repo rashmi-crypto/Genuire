@@ -9,3 +9,5 @@ nltk>=3.6.0
 scikit-learn>=1.0.0
 imbalanced-learn>=0.10.0
 gunicorn>=20.1.0
+google-generativeai>=0.5.2
+python-dotenv>=1.0.0
