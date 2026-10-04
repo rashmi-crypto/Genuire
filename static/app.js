@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const result = await response.json();
 
             if (result.status === 'success') {
-                renderDashboard(result, descriptionText, payload.location);
+                renderDashboard(result, payload.description, payload.location);
                 // Switch states
                 loadingState.classList.remove('active');
                 activeState.classList.add('active');
