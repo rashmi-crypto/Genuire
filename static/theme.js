@@ -5,8 +5,7 @@
 (function() {
     // 1. Immediately apply saved theme on load to HTML element to prevent flash
     const savedTheme = localStorage.getItem('genuire-theme');
-    const systemPrefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-    if (savedTheme === 'light' || (!savedTheme && systemPrefersLight)) {
+    if (savedTheme === 'light' || !savedTheme) {
         document.documentElement.classList.add('light-theme');
     }
 })();
