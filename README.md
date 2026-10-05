@@ -3,18 +3,8 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/license-MIT-blue.svg?style=flat-square" alt="MIT License">
   <img src="https://img.shields.io/badge/python-3.12-blue?style=flat-square" alt="Python 3.12">
   <img src="https://img.shields.io/badge/platform-Flask-orange?style=flat-square" alt="Flask">
-  <a href="SECURITY.md"><img src="https://img.shields.io/badge/security-policy-success?style=flat-square" alt="Security Policy"></a>
-  <a href="CODE_OF_CONDUCT.md"><img src="https://img.shields.io/badge/code%20of-conduct-blueviolet?style=flat-square" alt="Code of Conduct"></a>
-</p>
-
-<p align="center">
-  <a href="LICENSE"><strong>MIT License</strong></a> •
-  <a href="CODE_OF_CONDUCT.md"><strong>Code of Conduct</strong></a> •
-  <a href="CONTRIBUTING.md"><strong>Contributing Guidelines</strong></a> •
-  <a href="SECURITY.md"><strong>Security Policy</strong></a>
 </p>
 
 ---
@@ -128,12 +118,3 @@ python app.py
 ```
 Navigate to **`http://127.0.0.1:5000`** in your web browser to access the Genuire dashboard.
 
-
-
-## 🤝 Contributing
-
-We welcome contributions to Genuire! Please see our [Contributing Guidelines](CONTRIBUTING.md) for more details on how to get started, report bugs, or submit pull requests.
-
-## 📄 License
-
-This project is licensed under the [MIT License](LICENSE).
